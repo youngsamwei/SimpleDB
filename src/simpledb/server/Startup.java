@@ -4,6 +4,7 @@ package simpledb.server;
 import simpledb.parse.Parser;
 import simpledb.query.Plan;
 import simpledb.query.Scan;
+import simpledb.record.TableInfo;
 import simpledb.tx.Transaction;
 
 public class Startup {
@@ -11,10 +12,11 @@ public class Startup {
      try {
          // analogous to the driver
       SimpleDB.init("studentdb");
-      
+
          // analogous to the connection
       Transaction tx = new Transaction();
-      
+
+         TableInfo ti = SimpleDB.mdMgr().getTableInfo("fldcat", tx);
          // analogous to the statement
       String qry = "select SName, DName "
       + "from DEPT, STUDENT "
@@ -37,6 +39,7 @@ public class Startup {
       }
       catch(Exception e) {
       }
+
 
    }
 }
