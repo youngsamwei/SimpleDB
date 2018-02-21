@@ -49,7 +49,16 @@ public class IndexInfo {
       // Create new HashIndex for hash indexing
       return new HashIndex(idxname, sch, tx);
    }
-   
+
+   /**
+    * 打开btree索引。
+    * 2018-2-21增加
+    * @return 索引
+    */
+   public Index openBTreeIndex(){
+      Schema sch = schema();
+      return new BTreeIndex(idxname, sch, tx);
+   }
    /**
     * Estimates the number of block accesses required to
     * find all index records having a particular search key.
