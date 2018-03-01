@@ -10,6 +10,11 @@ import simpledb.index.Index;
 /**
  * A B-tree implementation of the Index interface.
  * @author Edward Sciore
+ *
+ * 详细介绍
+ * http://blog.csdn.net/endlu/article/details/51720299 BTree和B+Tree详解
+ * https://www.cnblogs.com/gym333/p/6877023.html B-Tree, B+Tree, B*树介绍
+ *
  */
 public class BTreeIndex implements Index {
    private Transaction tx;
@@ -28,22 +33,23 @@ public class BTreeIndex implements Index {
     */
    public BTreeIndex(String idxname, Schema leafsch, Transaction tx) {
       this.tx = tx;
-      // deal with the leaves
+      // deal with the leaves 叶子节点
       String leaftbl = idxname + "leaf";
       leafTi = new TableInfo(leaftbl, leafsch);
       if (tx.size(leafTi.fileName()) == 0)
          tx.append(leafTi.fileName(), new BTPageFormatter(leafTi, -1));
 
-      // deal with the directory
+      // deal with the directory 中间节点
       Schema dirsch = new Schema();
       dirsch.add("block",   leafsch);
       dirsch.add("dataval", leafsch);
       String dirtbl = idxname + "dir";
       dirTi = new TableInfo(dirtbl, dirsch);
       rootblk = new Block(dirTi.fileName(), 0);
-      if (tx.size(dirTi.fileName()) == 0)
-         // create new root block
-         tx.append(dirTi.fileName(), new BTPageFormatter(dirTi, 0));
+      if (tx.size(dirTi.fileName()) == 0) {
+          // create new root block
+          tx.append(dirTi.fileName(), new BTPageFormatter(dirTi, 0));
+      }
       BTreePage page = new BTreePage(rootblk, dirTi, tx);
       if (page.getNumRecs() == 0) {
 			// insert initial directory entry
